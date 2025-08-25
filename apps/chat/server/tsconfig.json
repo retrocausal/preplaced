@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "esnext", // Sets the ECMAScript target to the latest version for modern features
+    "module": "esnext", // Uses ES Modules for better tree-shaking and modularity
+    "strict": true, // Enforces strict type checking for safer code
+    "esModuleInterop": true, // Enables interoperability between CommonJS and ES Modules
+    "skipLibCheck": true, // Skips type checking of declaration files for faster builds
+    "forceConsistentCasingInFileNames": true, // Ensures consistent file name casing across file systems
+    "outDir": "./dist", // Directs compiled JavaScript output to the dist folder
+    "rootDir": "./", // Defines the root directory for TypeScript source files
+    "moduleResolution": "bundler", // Resolves modules like a bundler, requiring explicit .ts extensions
+    "baseUrl": ".", // Sets the base directory for resolving non-relative module imports
+    "resolveJsonModule": true, // Allows JSON files to be imported as modules
+    "allowSyntheticDefaultImports": true, // Permits default imports from modules without default exports
+    "paths": {
+      "#*": ["./*.ts"], // Maps #* alias to root-level .ts files
+      "#db/*": ["./db/*.ts"], // Maps #db/* to .ts files in the db directory
+      "#models/*": ["./db/models/*.ts"], // Maps #models/* to .ts files in the db/models directory
+      "#middlewares/*": ["./middlewares/*.ts"], // Maps #middlewares/* to .ts files in the middlewares directory
+      "#utils/*": ["./utils/*.ts"] // Maps #utils/* to .ts files in the utils directory
+    }
+  },
+  "include": ["**/*.ts", "types.d.ts"], // Includes all .ts files in the project for compilation
+  "exclude": ["node_modules"] // Excludes node_modules from the compilation process
+  // TypeScript configuration for the chat server application
+  // Defines compiler settings, module resolution, and alias paths for imports
+}

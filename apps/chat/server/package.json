@@ -1,0 +1,45 @@
+{
+  "name": "server",
+  "type": "module",
+  "version": "1.0.0",
+  "entry": "dist/app.js",
+  "scripts": {
+    "start:1": "npm run build && PORT=4001 nodemon dist/app.js",
+    "start:2": "npm run build && PORT=4002 nodemon dist/app.js",
+    "start:3": "npm run build && PORT=4003 nodemon dist/app.js",
+    "start:4": "npm run build && PORT=4004 nodemon dist/app.js",
+    "start:all": "concurrently \"npm run start:1\" \"npm run start:2\" \"npm run start:3\" \"npm run start:4\"",
+    "build": "rm -rf dist && tsc",
+    "dev": "nodemon --watch \"**/*.ts\" --ext ts --exec \"npm run build && npm run start:all\""
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^5.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "8.17.2",
+    "zod": "^4.0.17"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/express": "~5.0.3",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^20.12.7",
+    "@types/response-time": "^2.3.4",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.1",
+    "response-time": "^2.3.4",
+    "typescript": "^5.5.2"
+  },
+  "imports": {
+    "#*": "./dist/*.js",
+    "#db/*": "./dist/db/*.js",
+    "#models/*": "./dist/db/models/*.js",
+    "#utils/*": "./dist/utils/*.js",
+    "#middlewares/*": "./dist/middlewares/*.js"
+  }
+}
