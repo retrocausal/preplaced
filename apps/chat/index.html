@@ -1,121 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<link rel="icon" type="image/svg+xml" href="/src/Assets/parley.svg" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Parley</title>
-		<!-- Preconnect for faster loading -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/src/Assets/parley.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parley</title>
+    <!-- Preconnect for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-		<!-- Preload the stylesheet -->
-		<link
-			rel="preload"
-			as="style"
-			href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Quicksand:wght@300..700&display=swap"
-		/>
+    <!-- Preload the stylesheet -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Quicksand:wght@300..700&display=swap"
+    />
 
-		<!-- Load the fonts -->
-		<link
-			href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Quicksand:wght@300..700&display=swap"
-			rel="stylesheet"
-		/>
+    <!-- Load the fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
 
-		<style>
-			* {
-				box-sizing: border-box;
-				margin: 0;
-				padding: 0;
-			}
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        font-size: 16px;
+      }
 
-			/* Light Theme (default) */
-			:root {
-				--background: #fff1e6; /* Cream white */
-				--foreground: #4a3f35; /* Dark muted brown */
-				--primary: #d6dfc3; /* Light sage green */
-				--primary-foreground: #4a3f35; /* Dark muted brown for text on primary */
-				--secondary: #e0c6ad; /* Light peachy beige */
-				--secondary-foreground: #4a3f35; /* Dark muted brown for text on secondary */
-				--accent: #c1b2a2; /* Light taupe */
-				--accent-foreground: #4a3f35; /* Dark muted brown for text on accent */
-				--font-size-xs: 0.75rem;
-				--font-size-sm: 0.875rem;
-				--font-size-base: 1rem;
-				--font-size-md: 1.125rem;
-				--font-size-lg: 1.25rem;
-				--font-size-xl: 1.5rem;
-				--font-size-2xl: 1.875rem;
-				--font-size-3xl: 2.25rem;
-				--font-size-4xl: 3rem;
-				--font-size-5xl: 4rem;
-				--border-primary: #abb29c;
-				--border-secondary: #b39e8a;
-				--border-accent: #9a8e81;
-			}
+      /* Light Theme (default) */
+      :root {
+        --background: #fff1e6; /* Cream white */
+        --foreground: #4a3f35; /* Dark muted brown */
+        --primary: #d6dfc3; /* Light sage green */
+        --primary-foreground: #4a3f35; /* Dark muted brown for text on primary */
+        --secondary: #e0c6ad; /* Light peachy beige */
+        --secondary-foreground: #4a3f35; /* Dark muted brown for text on secondary */
+        --accent: #c1b2a2; /* Light taupe */
+        --accent-foreground: #4a3f35; /* Dark muted brown for text on accent */
+        --font-size-xs: 0.75rem;
+        --font-size-sm: 0.875rem;
+        --font-size-base: 1rem;
+        --font-size-md: 1.125rem;
+        --font-size-lg: 1.25rem;
+        --font-size-xl: 1.5rem;
+        --font-size-2xl: 1.75rem;
+        --font-size-3xl: 2rem;
+        --font-size-4xl: 2.25rem;
+        --font-size-5xl: 2.75rem;
+        --border-primary: #abb29c;
+        --border-secondary: #b39e8a;
+        --border-accent: #9a8e81;
+        --font-family: "Quicksand", sans-serif;
+        --font-alternate: "Nunito", sans-serif;
+      }
 
-			/* Earthy Color Palette - Dark Theme */
-			[data-theme="dark"] {
-				--background: #555555; /* Cement gray */
-				--foreground: #fcf9f4; /* Pastel cream */
-				--primary: #d6dfc3; /* Pastel green */
-				--primary-foreground: #4a3f35; /* Dark muted brown for text on primary */
-				--secondary: #ecc1b2; /* Pastel peach */
-				--secondary-foreground: #4a3f35; /* Dark muted brown for text on secondary */
-				--accent: #bce2cb; /* Pastel mint */
-				--accent-foreground: #4a3f35; /* Dark muted brown for text on accent */
-				--border-primary: #abb29c;
-				--border-secondary: #bc9a8e;
-				--border-accent: #96b4a2;
-			}
+      /* Earthy Color Palette - Dark Theme */
+      [data-theme="dark"] {
+        --background: #555555; /* Cement gray */
+        --foreground: #fcf9f4; /* Pastel cream */
+        --primary: #d6dfc3; /* Pastel green */
+        --primary-foreground: #4a3f35; /* Dark muted brown for text on primary */
+        --secondary: #ecc1b2; /* Pastel peach */
+        --secondary-foreground: #4a3f35; /* Dark muted brown for text on secondary */
+        --accent: #bce2cb; /* Pastel mint */
+        --accent-foreground: #4a3f35; /* Dark muted brown for text on accent */
+        --border-primary: #abb29c;
+        --border-secondary: #bc9a8e;
+        --border-accent: #96b4a2;
+      }
 
-			body {
-				background-color: var(--background);
-				color: var(--foreground);
-				font-family: "Quicksand", sans-serif;
-				padding-top: env(safe-area-inset-top);
-				padding-bottom: env(safe-area-inset-bottom);
-				padding-left: env(safe-area-inset-left);
-				padding-right: env(safe-area-inset-right);
-				transition: background-color 0.3s, color 0.3s;
-			}
+      body {
+        background-color: var(--background);
+        color: var(--foreground);
+        font-size: var(--font-size-base);
+        font-family: "Quicksand", sans-serif;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        transition: background-color 0.3s, color 0.3s;
+        width: 100vw;
+        height: 100vh;
+      }
 
-			h1,
-			h2,
-			h3,
-			h4,
-			h5,
-			h6 {
-				font-family: "Nunito", sans-serif;
-			}
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Nunito", sans-serif;
+      }
 
-			h1 {
-				font-size: var(--font-size-5xl);
-			}
+      h1 {
+        font-size: var(--font-size-3xl);
+      }
 
-			h2 {
-				font-size: var(--font-size-4xl);
-			}
+      h2 {
+        font-size: var(--font-size-2xl);
+      }
 
-			h3 {
-				font-size: var(--font-size-3xl);
-			}
+      h3 {
+        font-size: var(--font-size-xl);
+      }
 
-			h4 {
-				font-size: var(--font-size-2xl);
-			}
+      h4 {
+        font-size: var(--font-size-lg);
+      }
 
-			h5 {
-				font-size: var(--font-size-xl);
-			}
+      h5 {
+        font-size: var(--font-size-md);
+      }
 
-			h6 {
-				font-size: var(--font-size-lg);
-			}
-		</style>
-	</head>
-	<body>
-		<div id="root"></div>
-		<script type="module" src="/src/main.tsx"></script>
-	</body>
+      h6 {
+        font-size: var(--font-size-base);
+      }
+
+      main {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+      }
+
+      main > aside {
+        width: 100%;
+        height: 35vh;
+        max-height: 35vh;
+        overflow: hidden auto;
+        padding: 1rem;
+      }
+
+      main > article {
+        width: 100%;
+        height: 65vh;
+        max-height: 65vh;
+        overflow: hidden auto;
+        padding: 1rem;
+      }
+      @media screen and (min-width: 1080px) {
+        main > aside {
+          width: auto;
+          max-width: 25vw;
+          height: 100%;
+        }
+        main > article {
+          flex: 1 1 auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <aside>
+        <nav>
+          <ul id="rooms"></ul>
+        </nav>
+      </aside>
+      <article id="root"></article>
+    </main>
+    <script type="module" src="/src/scripts/configure.ts"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

@@ -1,0 +1,69 @@
+.container {
+  width: 100%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.container .auth .heading {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-family);
+  /* text-shadow: 1px 1px 1px var(--accent), -1px -1px 1px var(--accent-foreground); */
+}
+
+.container .auth {
+  width: 75%;
+  max-width: 30vmax;
+  padding: 0.25rem 1rem 1rem;
+  margin: auto;
+  border: 1px solid var(--border-accent);
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+  border-radius: 0.5rem;
+  box-shadow: 1px 1px 15px 1px var(--accent-foreground),
+    -1px -1px 25px 1px var(--accent) inset;
+}
+
+.container .auth .message {
+  padding: 0.25rem 0;
+  font-size: var(--font-size-xs);
+}
+
+.container .auth .section {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  --span: 24;
+  margin: 0.5rem 0;
+}
+
+.container .auth .section > label,
+.container .auth .section > input,
+.container .auth .section > button {
+  --occupy: 24;
+  padding: 0.25rem;
+  font-family: var(--font-alternate);
+  flex-basis: calc((var(--occupy) / var(--span)) * 100%);
+}
+.container .auth .section label {
+  font-size: var(--font-size-md);
+}
+.container .auth .section input,
+.container .auth .section button {
+  outline: none;
+  height: 2.4rem;
+  font-size: var(--font-size-small);
+  border: none;
+  border-radius: 0.25rem;
+  box-shadow: 1px -1px 12px 2px var(--accent-foreground) inset;
+}
+
+.container .auth .section button {
+  box-shadow: 1px -1px 10px 1px var(--accent) inset;
+  background-color: var(--accent-foreground);
+  color: var(--accent);
+  margin: 1rem 0 0;
+  border-radius: 0.5rem;
+}
