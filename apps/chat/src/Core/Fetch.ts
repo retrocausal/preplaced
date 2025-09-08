@@ -16,15 +16,16 @@ interface Fetch {
 }
 
 class NetOps implements Fetch {
-  host: string = "preplaced.schrodingers.cat";
-  credentials: RequestCredentials = "same-origin";
-  keepalive: boolean = false;
-  integrity: string = "";
-  mode: RequestMode = "same-origin";
-  redirect: RequestRedirect = "manual";
-  _signal: AbortSignal | null = null;
+  host: string = import.meta.env.VITE_API_HOST;
+  appBase: string = import.meta.env.VITE_APP_BASE;
+  keepalive: boolean = true;
   headers: Headers = new Headers();
   prefix: string = "/api";
+  integrity: string = "";
+  _credentials: RequestCredentials = "same-origin";
+  _mode: RequestMode = "same-origin";
+  _redirect: RequestRedirect = "follow";
+  _signal: AbortSignal | null = null;
   _payload: JsonObject | FormData | null = null;
   _verb: HTMLFormMethod = "GET";
 
@@ -48,24 +49,37 @@ class NetOps implements Fetch {
   public get signal(): AbortSignal | null {
     return this._signal;
   }
+  public set redirect(v: RequestRedirect) {
+    throw new Error("Disallowed configuration : redirect");
+  }
+  public get redirect(): RequestRedirect {
+    return this._redirect;
+  }
+  public set mode(v: RequestMode) {
+    throw new Error("Disallowed configuration : mode");
+  }
+  public get mode(): RequestMode {
+    return this._mode;
+  }
+  public set credentials(v: RequestCredentials) {
+    throw new Error("Disallowed configuration : credentials");
+  }
+  public get credentials(): RequestCredentials {
+    return this._credentials;
+  }
 
   async execute(path: string): Promise<FetchResponse> {
+    const src = `${this.pathPrefix}${path}`;
     const response: FetchResponse = {
       data: null,
       error: null,
       metadata: {
-        url: this.pathPrefix + path,
+        url: src,
         method: this.method,
       },
     };
 
     try {
-      if (!path) {
-        response.error = { message: "Path is required" };
-        response.metadata.url = "";
-        return response;
-      }
-
       switch (this.method) {
         case "POST":
         case "DELETE":
@@ -80,8 +94,6 @@ class NetOps implements Fetch {
         default:
           if (this.body) this.body = null;
       }
-      this.headers.set("Accept-Encoding", "br;q=1.0, gzip;q=0.8");
-      const src = this.pathPrefix + path;
       const requestInit: RequestInit = {
         method: this.method,
         headers: this.headers,
@@ -98,31 +110,45 @@ class NetOps implements Fetch {
       }
       const request = new Request(src, requestInit);
       const fetchResponse = await fetch(request);
+      const status = fetchResponse.status;
+      response.metadata = { ...response.metadata, status };
       if (!fetchResponse.ok) {
-        switch (true) {
-          case fetchResponse.status >= 300 && fetchResponse.status < 400:
-            response.metadata.redirect = true;
-            response.metadata.location =
-              fetchResponse.headers.get("Location") ?? null;
-            return response;
-          default:
-            response.error = {
-              status: fetchResponse.status,
-              statusText: fetchResponse.statusText,
-              body: (await fetchResponse.json()) as JsonObject,
-            };
-            return response;
+        if (status && status > 400 && status < 500) {
+          if (status !== 429)
+            response.metadata.location = import.meta.env.VITE_AUTH_BASE;
+          else {
+          }
         }
+        response.error = {
+          status: fetchResponse.status,
+          statusText: fetchResponse.statusText,
+          ...((await fetchResponse.json()) as JsonObject),
+        };
+      } else {
+        response.data = (await fetchResponse.json()) as JsonObject;
       }
-      response.data = (await fetchResponse.json()) as JsonObject;
       return response;
     } catch (error) {
       response.error = {
-        message: error instanceof Error ? error.message : "Failed to fetch",
+        message:
+          error instanceof Error ? error.message : "Something went wrong!",
       };
       return response;
     }
   }
 }
 
-export default NetOps;
+export class ApiClient extends NetOps {
+  constructor(method: string, body: JsonObject | FormData | null = null) {
+    super();
+    this.method = method as HTMLFormMethod;
+    this.signal = new AbortController().signal;
+    if (body) this.body = body;
+  }
+
+  execute(path: string): Promise<FetchResponse> {
+    let src = path;
+    if (!path.startsWith("/")) src = `/${path}`;
+    return super.execute(src);
+  }
+}

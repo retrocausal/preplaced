@@ -1,21 +1,42 @@
 import useApiService from "@/Core/hooks/Api";
 import PATHS from "@/API";
-import { useCallback, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function useAuthentication() {
+export default function useAuthentication(location: string = "/") {
   const path = PATHS.AUTH;
-  const { fetch, ...state } = useApiService(path, "POST");
-  console.log(state);
-
+  const navigate = useNavigate();
+  const { fetch, inProgress } = useApiService(path, "POST");
+  const [exception, setException] = useState<string | null>(null);
   const submit = useCallback(
     async (event: FormEvent) => {
       event.preventDefault();
       const form = event.target;
       const formData = new FormData(form as HTMLFormElement);
-      await fetch(formData, { replace: true });
+      const username = formData.get("username");
+      const password = formData.get("password");
+      if (!username || !password) {
+        setException("Please fill in both username and password");
+      } else {
+        const chatUser = await fetch(formData, { replace: true });
+        const { error, data } = chatUser;
+        const { message } = error || {};
+        if (message) {
+          setException(message);
+        } else {
+          if (data) {
+            navigate(location, { replace: true });
+          }
+        }
+      }
       return false;
     },
-    [fetch]
+    [fetch, setException, location, navigate]
   );
-  return { submit };
+  return {
+    submit,
+    exception,
+    setException,
+    inProgress,
+  };
 }

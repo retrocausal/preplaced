@@ -7,17 +7,10 @@ export const ApiReductions = (state: ApiState, action: ApiAction): ApiState => {
     case "INIT":
       cloned.inProgress = true;
       cloned.response = null;
-      cloned.error = null;
       break;
-    case "SUCCESS":
+    case "COMPLETE":
       cloned.inProgress = false;
       cloned.response = value?.response ?? null;
-      cloned.error = null;
-      break;
-    case "FAILURE":
-      cloned.inProgress = false;
-      cloned.response = value?.response ?? null;
-      cloned.error = value?.error ?? null;
       break;
     default:
   }

@@ -1,7 +1,8 @@
 .container {
   width: 100%;
   display: flex;
-  align-content: center;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   padding: 1rem;
 }
@@ -12,10 +13,12 @@
   font-family: var(--font-family);
   /* text-shadow: 1px 1px 1px var(--accent), -1px -1px 1px var(--accent-foreground); */
 }
+.container .error {
+  color: var(--exception);
+}
 
 .container .auth {
-  width: 75%;
-  max-width: 30vmax;
+  width: 100%;
   padding: 0.25rem 1rem 1rem;
   margin: auto;
   border: 1px solid var(--border-accent);
@@ -66,4 +69,15 @@
   color: var(--accent);
   margin: 1rem 0 0;
   border-radius: 0.5rem;
+}
+
+@media screen and (min-width: 760px) {
+  .container .auth {
+    width: 75%;
+    max-width: 50vw;
+  }
+
+  .container .auth .message {
+    font-size: var(--font-size-small);
+  }
 }

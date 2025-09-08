@@ -55,6 +55,7 @@
         --border-primary: #abb29c;
         --border-secondary: #b39e8a;
         --border-accent: #9a8e81;
+        --exception: #e07a5f; /* Soft terracotta for errors */
         --font-family: "Quicksand", sans-serif;
         --font-alternate: "Nunito", sans-serif;
       }
@@ -128,12 +129,12 @@
         overflow: hidden auto;
         display: flex;
         flex-wrap: wrap;
+        flex-flow: column;
         align-content: flex-start;
       }
 
       main > aside {
         width: 100%;
-        height: 35vh;
         max-height: 35vh;
         overflow: hidden auto;
         padding: 1rem;
@@ -141,12 +142,14 @@
 
       main > article {
         width: 100%;
-        height: 65vh;
-        max-height: 65vh;
+        flex: 1 1 auto;
         overflow: hidden auto;
         padding: 1rem;
       }
       @media screen and (min-width: 1080px) {
+        main {
+          flex-flow: row;
+        }
         main > aside {
           width: auto;
           max-width: 25vw;
@@ -165,7 +168,7 @@
           <ul id="rooms"></ul>
         </nav>
       </aside>
-      <article id="root"></article>
+      <article id="room"></article>
     </main>
     <script type="module" src="/src/scripts/configure.ts"></script>
     <script type="module" src="/src/main.tsx"></script>

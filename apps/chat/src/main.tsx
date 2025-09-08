@@ -1,18 +1,14 @@
-import { StrictMode, Fragment } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
-import { createPortal } from "react-dom";
-import AuthProvider from "@/Providers/Auth";
+import ChatCtxProvider from "@/Providers/AppContext";
 import router from "@Router/index.tsx";
-import { navBar, appHost } from "@/Scripts/configure";
+import { appHost } from "@/Scripts/configure";
 
 createRoot(appHost!).render(
   <StrictMode>
-    <AuthProvider>
-      <Fragment>
-        {navBar ? createPortal(<Fragment></Fragment>, navBar) : null}
-      </Fragment>
+    <ChatCtxProvider>
       <RouterProvider router={router}></RouterProvider>
-    </AuthProvider>
+    </ChatCtxProvider>
   </StrictMode>
 );

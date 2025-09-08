@@ -1,12 +1,11 @@
+import Proxify from "@/proxy";
+
 const BASE = "/chat";
 
 const PATHS = {
   AUTH: "/auth/login",
+  LOGOUT: "/auth/logout",
+  ROOMS: "/list",
 };
 
-export default new Proxy(PATHS, {
-  get(target, key) {
-    const value = target[key as keyof typeof PATHS];
-    return value ? `${BASE}${value}` : null;
-  },
-});
+export default Proxify(PATHS, BASE);

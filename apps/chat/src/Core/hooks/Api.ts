@@ -1,30 +1,14 @@
-import NetOps from "@/Core/Fetch";
+import { ApiClient } from "@/Core/Fetch";
 import type { FetchResponse, JsonObject, NavOpts } from "@/Types";
 import type { HTMLFormMethod, NavigateOptions } from "react-router-dom";
 import { useCallback, useReducer } from "react";
 import { ApiReductions } from "@/Reductions/Api";
 import { useNavigate } from "react-router-dom";
 
-class ApiClient extends NetOps {
-  constructor(method: string, body: JsonObject | FormData | null = null) {
-    super();
-    this.method = method as HTMLFormMethod;
-    this.signal = new AbortController().signal;
-    if (body) this.body = body;
-  }
-
-  execute(path: string): Promise<FetchResponse> {
-    let src = path;
-    if (!path.startsWith("/")) src = `/${path}`;
-    return super.execute(src);
-  }
-}
-
 export default function useApiService(path: string, method: string) {
   const [state, dispatch] = useReducer(ApiReductions, {
     inProgress: false,
     response: null,
-    error: null,
   });
   const navigate = useNavigate();
   const fetch = useCallback(
@@ -40,21 +24,8 @@ export default function useApiService(path: string, method: string) {
       try {
         const client = new ApiClient(method, payload ?? null);
         response = await client.execute(path);
-        const { error: exception } = response;
-        if (exception) {
-          throw new Error(
-            exception.message ?? "Api Service failed to fetch data"
-          );
-        }
-        dispatch({
-          type: "SUCCESS",
-          value: { response },
-        });
       } catch (error) {
-        dispatch({
-          type: "FAILURE",
-          value: { response, error: error as Error },
-        });
+        response.error = { message: "Something went wrong!" };
       } finally {
         const navCfg: NavigateOptions = {
           replace: navOptions?.replace ?? false,
@@ -63,10 +34,12 @@ export default function useApiService(path: string, method: string) {
             : { from: window.location },
         };
 
-        const { redirect, location } = response?.metadata;
-        if (redirect && location) {
+        dispatch({ type: "COMPLETE", value: { response } });
+        const { location } = response?.metadata;
+        if (location) {
           navigate(location, navCfg);
         }
+        return response;
       }
     },
     [path, method]

@@ -1,19 +1,45 @@
 import type { ReactNode } from "react";
 import type { HTMLFormMethod } from "react-router-dom";
-export interface Auth {
-  isLoggedIn: boolean;
+export interface Context {
   user: string | null;
-  ttl: string;
+  chatCount?: number;
 }
-export type AuthActionValue = {
-  [K in keyof Auth]?: Auth[K];
+export type CtxActionValue = {
+  [K in keyof Context]?: Context[K];
 };
-export interface AuthAction {
+export interface CtxDispatch {
   type: string;
-  value?: AuthActionValue;
+  value?: CtxActionValue;
 }
 
-export interface AuthProviderProps {
+export interface LoaderContextProviderProps {
+  children?: ReactNode;
+}
+
+export interface ChatLoaderData {
+  chats: {
+    _id: string;
+    messageCount: number;
+    participantCount: number;
+    members: string[];
+    conversations: {
+      text: string;
+      epoch?: { formatted: string; timestamp: number };
+      authorName: string;
+      edited?: boolean;
+      readBy?: string[];
+    }[];
+  }[];
+  total: number;
+}
+
+export type LoaderData = {
+  navigation: { to?: string; from?: string };
+  as: "NAVIGATE" | "FETCHRESPONSE";
+  fetched?: Partial<FetchResponse>;
+};
+
+export interface CtxProviderProps {
   children: ReactNode;
 }
 
@@ -37,17 +63,16 @@ export interface FetchResponse {
     body?: JsonObject;
   } | null;
   metadata: {
-    redirect?: boolean;
     location?: string | null;
     url: string;
     method: HTMLFormMethod;
+    status?: number;
   };
 }
 
 export interface ApiState {
   inProgress: boolean;
   response: FetchResponse | null;
-  error: Error | null;
 }
 
 type ApiActionValue = {
