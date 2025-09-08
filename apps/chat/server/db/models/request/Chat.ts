@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 export const chatListRequestSchema = z.object({
-  userId: z.string().nonempty("User ID is required"),
+  userId: z
+    .string({ error: "User ID is required" })
+    .nonempty("User ID must be non-empty"),
   limit: z
     .number()
     .int()

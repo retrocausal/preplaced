@@ -14,6 +14,8 @@ export const validateChatQuery = (
     req.validatedQuery = validatedQuery; // Add validated data to a new property
     next();
   } catch (error: unknown) {
+    console.log((error as ZodError).issues);
+
     const message =
       error instanceof ZodError
         ? error.issues[0].message

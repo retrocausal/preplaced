@@ -2,7 +2,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { UserDocument } from "#models/types";
-import { maxLength, minLength } from "zod";
 
 // Define schema
 const schema = new mongoose.Schema({
@@ -10,6 +9,12 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.String,
     required: true,
     unique: true,
+    minLength: 5,
+    maxLength: 24,
+  },
+  displayName: {
+    type: mongoose.Schema.Types.String,
+    required: true,
     minLength: 5,
     maxLength: 24,
   },

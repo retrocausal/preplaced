@@ -4,13 +4,14 @@
   "version": "1.0.0",
   "entry": "dist/app.js",
   "scripts": {
-    "start:1": "npm run build && PORT=4001 nodemon dist/app.js",
-    "start:2": "npm run build && PORT=4002 nodemon dist/app.js",
-    "start:3": "npm run build && PORT=4003 nodemon dist/app.js",
-    "start:4": "npm run build && PORT=4004 nodemon dist/app.js",
+    "start:1": "PORT=4001 nodemon dist/app.js",
+    "start:2": "PORT=4002 nodemon dist/app.js",
+    "start:3": "PORT=4003 nodemon dist/app.js",
+    "start:4": "PORT=4004 nodemon dist/app.js",
     "start:all": "concurrently \"npm run start:1\" \"npm run start:2\" \"npm run start:3\" \"npm run start:4\"",
     "build": "rm -rf dist && tsc",
-    "dev": "nodemon --watch \"**/*.ts\" --ext ts --ignore node_modules --ignore dist --exec \"npm run build && npm run start:all\""
+    "watch": "tsc --watch",
+    "dev": "npm run watch & npm run start:all"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -33,7 +34,6 @@
     "@types/node": "^20.12.7",
     "@types/response-time": "^2.3.4",
     "concurrently": "^8.2.2",
-    "fsevents": "^2.3.3",
     "nodemon": "^3.0.1",
     "response-time": "^2.3.4",
     "typescript": "^5.5.2"

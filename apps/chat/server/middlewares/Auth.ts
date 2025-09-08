@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import User from "#models/User";
 import { generateToken, verifyToken } from "#utils/jwt";
 import { CustomException } from "#utils/exception";
+import config from "#config";
 
 // Login handler
 export const login = async (
@@ -17,38 +18,30 @@ export const login = async (
   if (!username || !password) {
     throw new CustomException("Username and password are required", 400);
   }
-
   const user = await User.findOne({ username });
   const valid = await user?.validateUser(password || "");
   if (!user || !valid) {
-    throw new CustomException(
-      `Invalid Username or password for ${username}`,
-      401
-    );
+    const message = !user ? `Invalid Username ${username}` : "Invalid Password";
+    throw new CustomException(message, 401);
   }
-
-  res.cookie("chatUser", generateToken(username), {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: true,
-    signed: true,
-  });
-  res.status(200).json({ username: user.username });
+  res.cookie("chatUser", generateToken(username), { ...config.auth });
+  res
+    .status(200)
+    .json({
+      username: user.username,
+      displayName: user.displayName,
+      chats: user.chatCount || 0,
+    });
 };
 
 // Logout handler
 export const logout = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.signedCookies);
-
   if (req.signedCookies.chatUser) {
-    res.clearCookie("chatUser", {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-      signed: true,
-    });
-    res.status(200).json({});
-  } else res.status(400).json({});
+    res.clearCookie("chatUser", { ...config.auth });
+  } else {
+    throw new CustomException("Invalid Session", 400);
+  }
+  res.status(200).json({});
 };
 
 // Authorize middleware

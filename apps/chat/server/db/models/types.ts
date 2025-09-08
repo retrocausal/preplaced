@@ -4,6 +4,7 @@ import { Document, Types } from "mongoose";
 export interface UserDocument extends Document {
   username: string;
   password: string;
+  displayName: string;
   chatCount: number;
   validateUser(password: string): Promise<boolean>;
   generateAuthToken(): string;

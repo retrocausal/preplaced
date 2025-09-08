@@ -7,12 +7,17 @@ import "dotenv/config";
 import routes from "#routes";
 import { authorize } from "#middlewares/Auth";
 import connection from "#db/db";
+import config from "#config";
 
 const app: Express = express();
+const port: string = process.env.PORT!;
+// Start listening and return the server instance for graceful shutdown
+const server = app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
 connection
   .then(() => {
     console.log("MongoDB connected to chatdb");
-    const port: string = process.env.PORT!;
     app.set("trust proxy", true);
     app.use(multer().any());
     app.use(express.json());
@@ -31,34 +36,15 @@ connection
     app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
       console.error("Run time Error:", err);
       if (
-        (err as CustomException).statusCode &&
-        (err as CustomException).statusCode === 401
+        ((err as CustomException).statusCode &&
+          (err as CustomException).statusCode === 401) ||
+        (req.path && req.path.match(/^\/auth\/logout.*/))
       ) {
-        res.clearCookie("chatUser", {
-          httpOnly: true,
-          sameSite: "strict",
-          secure: true,
-          signed: true,
-        });
-        res.status(301).location("/login").end();
-      } else
-        res
-          .status((err as CustomException).statusCode || 500)
-          .json({ message: (err as CustomException).message });
-    });
-
-    // Start listening and return the server instance for graceful shutdown
-    const server = app.listen(port, () => {
-      console.log(`Server listening on port ${port}`);
-    });
-
-    // Handle nodemon restart signal (SIGUSR2) for graceful shutdown
-    process.on("SIGUSR2", () => {
-      console.log(`SIGUSR2 received on port ${port}, shutting down gracefully`);
-      server.close(() => {
-        console.log(`Server on port ${port} closed`);
-        process.kill(process.pid, "SIGUSR2"); // Signal nodemon to proceed with restart
-      });
+        res.clearCookie("chatUser", { ...config.auth });
+      }
+      res
+        .status((err as CustomException).statusCode || 500)
+        .json({ message: (err as CustomException).message });
     });
   })
   .catch((err) => {
