@@ -1,4 +1,4 @@
-// derivations/chat.ts
+// middlewares/derivations/chat.ts
 // Derivation stage for chat fields after lookups
 export const deriveChatFields = {
   $addFields: {
@@ -10,6 +10,47 @@ export const deriveChatFields = {
         in: {
           $ifNull: ["$$participant.displayName", "$$participant.username"],
         },
+      },
+    },
+    title: {
+      $cond: {
+        if: { $gt: [{ $size: "$participants" }, 0] },
+        then: {
+          $reduce: {
+            input: {
+              $map: {
+                input: "$participants",
+                as: "participant",
+                in: {
+                  $cond: {
+                    if: {
+                      $eq: [
+                        "$$participant._id",
+                        { $toObjectId: "$currentUserId" },
+                      ],
+                    },
+                    then: "You",
+                    else: {
+                      $ifNull: [
+                        "$$participant.displayName",
+                        "$$participant.username",
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+            initialValue: "",
+            in: {
+              $concat: [
+                "$$value",
+                { $cond: [{ $eq: ["$$value", ""] }, "", ", "] },
+                "$$this",
+              ],
+            },
+          },
+        },
+        else: "Untitled Chat",
       },
     },
     // Derive per-message fields using $map on conversations
@@ -31,17 +72,17 @@ export const deriveChatFields = {
           epoch: {
             $let: {
               vars: {
-                year: { $year: { date: "$$NOW", timezone: "Asia/Kolkata" } }, // Current year in timezone
-                month: { $month: { date: "$$NOW", timezone: "Asia/Kolkata" } }, // Current month in timezone
+                year: { $year: { date: "$$NOW", timezone: "Asia/Kolkata" } },
+                month: { $month: { date: "$$NOW", timezone: "Asia/Kolkata" } },
                 tsYear: {
                   $year: { date: "$$conv.timestamp", timezone: "Asia/Kolkata" },
-                }, // Timestamp year
+                },
                 tsMonth: {
                   $month: {
                     date: "$$conv.timestamp",
                     timezone: "Asia/Kolkata",
                   },
-                }, // Timestamp month
+                },
                 timeStr: {
                   $dateToString: {
                     date: "$$conv.timestamp",
@@ -49,7 +90,15 @@ export const deriveChatFields = {
                     timezone: "Asia/Kolkata",
                   },
                 },
-                weekdayArray: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], // Array for weekday lookup
+                weekdayArray: [
+                  "Sunday",
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                ],
               },
               in: {
                 formatted: {

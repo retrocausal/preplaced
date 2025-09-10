@@ -8,6 +8,7 @@ import routes from "#routes";
 import { authorize } from "#middlewares/Auth";
 import connection from "#db/db";
 import config from "#config";
+import JWTParser from "#middlewares/decode";
 
 const app: Express = express();
 const port: string = process.env.PORT!;
@@ -28,7 +29,7 @@ connection
         console.log(`Response time for ${req.method} ${req.url}: ${time}ms`);
       })
     );
-    app.use(/^(?!\/auth\/login).*/, authorize);
+    app.use(/^(?!\/auth\/login).*/, authorize, JWTParser);
     app.get("/hello", (req: Request, res: Response) => {
       res.send(`Express server on port ${port} is up and running!`);
     });

@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { UserDocument } from "#models/types";
+import { generateToken } from "#utils/jwt";
 
 // Define schema
 const schema = new mongoose.Schema({
@@ -47,7 +48,7 @@ schema.methods.validateUser = async function (
 
 // Placeholder method to generate JWT token
 schema.methods.generateAuthToken = function (this: UserDocument): string {
-  throw new Error("generateAuthToken not implemented yet");
+  return generateToken(this.id || this._id.toString());
 };
 
 // Export User model with interface

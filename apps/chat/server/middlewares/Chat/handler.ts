@@ -33,7 +33,7 @@ export const fetchChats = async (
     const chats = conversations
       .map((c) => {
         const chat = c.toJSON();
-        return { ...chat, _id: `${c._id}` as string };
+        return { ...chat, _id: `${c._id}` as string, title: "" };
       })
       .sort((a, b) => {
         const aConvos = a.conversations || [];

@@ -1,6 +1,7 @@
 export interface ChatList {
   chats: {
     _id: string;
+    title: string;
     messageCount: number;
     participantCount: number;
     members: string[];

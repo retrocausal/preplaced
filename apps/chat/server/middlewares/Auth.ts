@@ -1,7 +1,7 @@
 // Import types and modules
 import { Request, Response, NextFunction } from "express";
 import User from "#models/User";
-import { generateToken, verifyToken } from "#utils/jwt";
+import { verifyToken } from "#utils/jwt";
 import { CustomException } from "#utils/exception";
 import config from "#config";
 
@@ -24,14 +24,12 @@ export const login = async (
     const message = !user ? `Invalid Username ${username}` : "Invalid Password";
     throw new CustomException(message, 401);
   }
-  res.cookie("chatUser", generateToken(username), { ...config.auth });
-  res
-    .status(200)
-    .json({
-      username: user.username,
-      displayName: user.displayName,
-      chats: user.chatCount || 0,
-    });
+  res.cookie("chatUser", user.generateAuthToken(), { ...config.auth });
+  res.status(200).json({
+    username: user.username,
+    displayName: user.displayName,
+    chatCount: user.chatCount || 0,
+  });
 };
 
 // Logout handler

@@ -4,7 +4,7 @@ import "dotenv/config";
 import ms from "ms";
 
 // Define payload type
-interface JwtPayload {
+export interface JwtPayload {
   id: string;
 }
 
@@ -20,4 +20,9 @@ export const generateToken = (userId: string): string => {
 // Verify JWT token
 export const verifyToken = (token: string): JwtPayload => {
   return jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+};
+
+export const extractPayload = (token: string) => {
+  const payload = jwt.decode(token);
+  return payload as JwtPayload;
 };

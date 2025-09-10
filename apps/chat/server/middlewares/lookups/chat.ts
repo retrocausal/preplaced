@@ -6,8 +6,8 @@ export const participantsLookup = {
     localField: "participants",
     foreignField: "_id",
     as: "participants",
-    // Project only usernames and displayName
-    pipeline: [{ $project: { username: 1, displayName: 1, _id: 0 } }],
+    // Project usernames, displayName, and _id for comparison in deriveChatFields
+    pipeline: [{ $project: { username: 1, displayName: 1, _id: 1 } }],
   },
 };
 

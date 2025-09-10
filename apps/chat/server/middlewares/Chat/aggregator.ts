@@ -27,6 +27,12 @@ export const fetchChats = async (
       {
         $match: { participants: new mongoose.Types.ObjectId(userId) },
       },
+      // Set currentUserId for use in deriveChatFields to replace matching participant's name with "you"
+      {
+        $set: {
+          currentUserId: userId,
+        },
+      },
       // Apply pagination offset
       {
         $skip: offset,

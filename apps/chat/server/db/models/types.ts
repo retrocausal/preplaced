@@ -2,6 +2,7 @@
 import { Document, Types } from "mongoose";
 
 export interface UserDocument extends Document {
+  _id: Types.ObjectId;
   username: string;
   password: string;
   displayName: string;
@@ -11,6 +12,7 @@ export interface UserDocument extends Document {
 }
 
 export interface MessageDocument extends Document {
+  _id: Types.ObjectId;
   author: Types.ObjectId | UserDocument;
   authorName?: string;
   text: string;
@@ -22,6 +24,7 @@ export interface MessageDocument extends Document {
 }
 
 export interface ChatDocument extends Document {
+  _id: Types.ObjectId;
   participants: Types.ObjectId[] | UserDocument[];
   previousParticipants: Types.ObjectId[];
   messages: Types.ObjectId[] | MessageDocument[];
