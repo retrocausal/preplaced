@@ -75,7 +75,7 @@ class NetOps implements Fetch {
       error: null,
       metadata: {
         url: src,
-        method: this.method,
+        method: this.method as string,
       },
     };
 

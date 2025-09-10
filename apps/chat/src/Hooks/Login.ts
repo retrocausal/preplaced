@@ -2,6 +2,7 @@ import useApiService from "@/Core/hooks/Api";
 import PATHS from "@/API";
 import { useCallback, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { CryptoUtil } from "@/Utils/crypto";
 
 export default function useAuthentication(location: string = "/") {
   const path = PATHS.AUTH;
@@ -25,6 +26,8 @@ export default function useAuthentication(location: string = "/") {
           setException(message);
         } else {
           if (data) {
+            const encUser = await CryptoUtil.encrypt({ ...data });
+            localStorage.setItem(import.meta.env.VITE_APP_USER, encUser);
             navigate(location, { replace: true });
           }
         }

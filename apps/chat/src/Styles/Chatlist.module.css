@@ -1,0 +1,68 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  position: relative;
+}
+
+.container .drawer {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  height: 3.2rem;
+  align-items: center;
+  padding: 0 1rem;
+  --cols: 24;
+  position: sticky;
+  justify-content: space-between;
+  top: -1px;
+  background-color: var(--accent-foreground);
+  color: var(--accent);
+}
+.container .drawer .title {
+  --span: 19;
+  flex-basis: calc((var(--span) / var(--cols)) * 100%);
+}
+
+.container .drawer .toggle {
+  --span: 4;
+  height: 80%;
+  flex-basis: calc((var(--span) / var(--cols)) * 100%);
+}
+
+.container .list {
+  width: 100%;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 1rem 0;
+}
+.container .list .item {
+  width: 100%;
+  height: 3.25rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--secondary);
+}
+
+.container .list .item .head {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  --cols: 24;
+}
+
+.container .list .item .head span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  --span: 15;
+  flex-basis: calc((var(--span) / var(--cols)) * 100%);
+}
+
+.container .list .item .head .date {
+  --span: 8;
+  font-size: var(--font-size-sm);
+  text-align: right;
+}

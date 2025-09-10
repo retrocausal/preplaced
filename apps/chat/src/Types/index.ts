@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import type { HTMLFormMethod } from "react-router-dom";
 export interface Context {
-  user: string | null;
+  username: string | null;
+  displayName: string | null;
   chatCount?: number;
+  conversation: null | Chat;
 }
 export type CtxActionValue = {
   [K in keyof Context]?: Context[K];
@@ -16,27 +17,30 @@ export interface LoaderContextProviderProps {
   children?: ReactNode;
 }
 
-export interface ChatLoaderData {
-  chats: {
-    _id: string;
-    messageCount: number;
-    participantCount: number;
-    members: string[];
-    conversations: {
-      text: string;
-      epoch?: { formatted: string; timestamp: number };
-      authorName: string;
-      edited?: boolean;
-      readBy?: string[];
-    }[];
+export type Chat = {
+  _id: string;
+  title: string;
+  messageCount: number;
+  participantCount: number;
+  members: string[];
+  conversations: {
+    text: string;
+    epoch?: { formatted: string; timestamp: number };
+    authorName: string;
+    edited?: boolean;
+    readBy?: string[];
   }[];
+};
+
+export interface ChatLoaderData {
+  chats: Chat[];
   total: number;
 }
 
 export type LoaderData = {
   navigation: { to?: string; from?: string };
   as: "NAVIGATE" | "FETCHRESPONSE";
-  fetched?: Partial<FetchResponse>;
+  fetched?: FetchResponse;
 };
 
 export interface CtxProviderProps {
@@ -64,8 +68,8 @@ export interface FetchResponse {
   } | null;
   metadata: {
     location?: string | null;
-    url: string;
-    method: HTMLFormMethod;
+    url?: string;
+    method?: string;
     status?: number;
   };
 }

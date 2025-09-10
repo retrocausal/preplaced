@@ -137,14 +137,14 @@
         width: 100%;
         max-height: 35vh;
         overflow: hidden auto;
-        padding: 1rem;
       }
 
       main > article {
         width: 100%;
         flex: 1 1 auto;
         overflow: hidden auto;
-        padding: 1rem;
+        box-shadow: 1px 1px 15px 1px var(--accent),
+          -1px -1px 25px 1px var(--accent-foreground);
       }
       @media screen and (min-width: 1080px) {
         main {
@@ -164,9 +164,7 @@
   <body>
     <main>
       <aside>
-        <nav>
-          <ul id="rooms"></ul>
-        </nav>
+        <nav id="rooms"></nav>
       </aside>
       <article id="room"></article>
     </main>
