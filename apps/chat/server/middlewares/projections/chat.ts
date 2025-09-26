@@ -1,7 +1,3 @@
-// projections/chat.ts
-
-import { title } from "process";
-
 // Final projection stage for chat output
 export const finalChatProject = {
   $project: {

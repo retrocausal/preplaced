@@ -20,6 +20,8 @@ export const fetchChats = async (
   const total = await Schema.Chat.countDocuments({ participants: userId });
   const fetchLimit = lazy ? limit : total || limit;
   const offset = (page - 1) * fetchLimit;
+  const conversationLimit: number = 10;
+  const conversationoffset = 0;
 
   try {
     const conversations: ChatAggregationResult[] = await Schema.Chat.aggregate([
@@ -42,7 +44,7 @@ export const fetchChats = async (
         $limit: fetchLimit,
       },
       { ...participantsLookup },
-      { ...conversationsLookup },
+      { ...conversationsLookup(conversationLimit, conversationoffset) },
       { ...deriveChatFields },
       { ...finalChatProject },
     ]);
@@ -56,7 +58,7 @@ export const fetchChats = async (
       return second - first;
     });
 
-    res.status(200).json({ chats, total } as ChatList);
+    res.json({ chats, total } as ChatList);
   } catch (error: unknown) {
     next(error);
   }

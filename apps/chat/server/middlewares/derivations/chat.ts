@@ -1,4 +1,3 @@
-// middlewares/derivations/chat.ts
 // Derivation stage for chat fields after lookups
 export const deriveChatFields = {
   $addFields: {
