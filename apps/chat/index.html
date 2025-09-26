@@ -32,16 +32,18 @@
         font-size: 16px;
       }
 
-      /* Light Theme (default) */
+      /* Light Theme (default) - Soft Cream and Charcoal Palette */
       :root {
-        --background: #fff1e6; /* Cream white */
-        --foreground: #4a3f35; /* Dark muted brown */
-        --primary: #d6dfc3; /* Light sage green */
-        --primary-foreground: #4a3f35; /* Dark muted brown for text on primary */
-        --secondary: #e0c6ad; /* Light peachy beige */
-        --secondary-foreground: #4a3f35; /* Dark muted brown for text on secondary */
-        --accent: #c1b2a2; /* Light taupe */
-        --accent-foreground: #4a3f35; /* Dark muted brown for text on accent */
+        --background: #ebe5df; /* Soft cream for overall background */
+        --foreground: #1f1f1f; /* Deep near-black for main text */
+        --primary: #e8eae6; /* Light stone-gray for primary sections (e.g., chat bubbles) */
+        --primary-foreground: #1f1f1f; /* Dark text on primary */
+        --secondary: #3c3f42; /* Dark charcoal for secondary sections */
+        --secondary-foreground: #f8f9fa; /* Bright off-white text on secondary */
+        --accent: #d4b8a2; /* Pastel chocolate for highlights/buttons */
+        --accent-foreground: #1f1f1f; /* Dark text on pastel accent for contrast */
+        --secondary-foreground-highlight: #b0c4de; /* Cool blue-gray text on secondary (e.g., for links) */
+        --secondary-foreground-warm: #f4a460; /* Warm muted orange text on secondary (e.g., for accents)*/
         --font-size-xs: 0.75rem;
         --font-size-sm: 0.875rem;
         --font-size-base: 1rem;
@@ -52,34 +54,36 @@
         --font-size-3xl: 2rem;
         --font-size-4xl: 2.25rem;
         --font-size-5xl: 2.75rem;
-        --border-primary: #abb29c;
-        --border-secondary: #b39e8a;
-        --border-accent: #9a8e81;
-        --exception: #e07a5f; /* Soft terracotta for errors */
+        --border-primary: #d3d5d2; /* Light gray borders */
+        --border-secondary: #5a5d60; /* Darker charcoal borders */
+        --border-accent: #4a4c4f; /* Subtle accent borders */
+        --exception: #d32f2f; /* Soft red for errors */
         --font-family: "Quicksand", sans-serif;
         --font-alternate: "Nunito", sans-serif;
       }
 
-      /* Earthy Color Palette - Dark Theme */
+      /* Dark Theme - Deep Charcoal and Black Palette */
       [data-theme="dark"] {
-        --background: #555555; /* Cement gray */
-        --foreground: #fcf9f4; /* Pastel cream */
-        --primary: #d6dfc3; /* Pastel green */
-        --primary-foreground: #4a3f35; /* Dark muted brown for text on primary */
-        --secondary: #ecc1b2; /* Pastel peach */
-        --secondary-foreground: #4a3f35; /* Dark muted brown for text on secondary */
-        --accent: #bce2cb; /* Pastel mint */
-        --accent-foreground: #4a3f35; /* Dark muted brown for text on accent */
-        --border-primary: #abb29c;
-        --border-secondary: #bc9a8e;
-        --border-accent: #96b4a2;
+        --background: #252627; /* Deep charcoal background */
+        --foreground: #f5f6f5; /* Bright off-white for text */
+        --primary: #4b4d50; /* Muted slate for primary sections */
+        --primary-foreground: #f5f6f5; /* Bright text on primary */
+        --secondary: #1a1b1c; /* Dark black for secondary sections */
+        --secondary-foreground: #f5f6f5; /* Bright text on secondary */
+        --secondary-foreground-highlight: #e8b923; /* Muted gold text on secondary (e.g., for highlights) */
+        --secondary-foreground-warm: #4ecdc4; /* Soft teal text on secondary (e.g., for links) */
+        --accent: #b8bcb8; /* Pastel cement-gray for accents/highlights */
+        --accent-foreground: #1f1f1f; /* Dark text on pastel accent for contrast */
+        --border-primary: #5e6063; /* Subtle slate borders */
+        --border-secondary: #2f3032; /* Darker black borders */
+        --border-accent: #262728; /* Deepest borders */
+        --exception: #ef5350; /* Muted red for errors */
       }
-
       body {
         background-color: var(--background);
         color: var(--foreground);
         font-size: var(--font-size-base);
-        font-family: "Quicksand", sans-serif;
+        font-family: var(--font-family);
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
         padding-left: env(safe-area-inset-left);
@@ -95,7 +99,7 @@
       h4,
       h5,
       h6 {
-        font-family: "Nunito", sans-serif;
+        font-family: var(--font-alternate);
       }
 
       h1 {
@@ -137,10 +141,12 @@
         width: 100%;
         max-height: 35vh;
         overflow: hidden auto;
+        flex-shrink: 0;
       }
 
       main > article {
         width: 100%;
+        max-height: 100%;
         flex: 1 1 auto;
         overflow: hidden auto;
         box-shadow: 1px 1px 15px 1px var(--accent),
@@ -155,13 +161,10 @@
           max-width: 25vw;
           height: 100%;
         }
-        main > article {
-          flex: 1 1 auto;
-        }
       }
     </style>
   </head>
-  <body>
+  <body data-theme="light">
     <main>
       <aside>
         <nav id="rooms"></nav>

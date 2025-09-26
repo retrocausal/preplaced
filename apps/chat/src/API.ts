@@ -6,6 +6,7 @@ const PATHS = {
   AUTH: "/auth/login",
   LOGOUT: "/auth/logout",
   ROOMS: "/list",
+  CONVERSATION: "/conversation",
 };
 
 export default Proxify(PATHS, BASE);

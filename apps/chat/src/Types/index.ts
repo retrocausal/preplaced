@@ -89,3 +89,13 @@ export type ApiAction = {
 };
 
 export type NavOpts = { replace?: boolean; includeState?: boolean };
+
+export interface LazyFetchState {
+  id: string;
+  messages: (Chat | void)[];
+}
+
+export type LazyFetchAction = {
+  type: string;
+  value?: ApiActionValue & { id?: string };
+};
