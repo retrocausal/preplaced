@@ -92,10 +92,17 @@ export type NavOpts = { replace?: boolean; includeState?: boolean };
 
 export interface LazyFetchState {
   id: string;
-  messages: (Chat | void)[];
+  messages: Chat["conversations"] | null;
+  page: number;
 }
 
 export type LazyFetchAction = {
   type: string;
-  value?: ApiActionValue & { id?: string };
+  value?: { id?: string; messages?: LazyFetchState["messages"]; page?: number };
+};
+
+export type FetchConfig = {
+  payload?: JsonObject | FormData;
+  navOptions?: NavOpts;
+  query?: Record<string, string>;
 };

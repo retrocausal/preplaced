@@ -139,6 +139,7 @@ class NetOps implements Fetch {
 }
 
 export class ApiClient extends NetOps {
+  _query: string = "";
   constructor(method: string, body: JsonObject | FormData | null = null) {
     super();
     this.method = method as HTMLFormMethod;
@@ -146,9 +147,18 @@ export class ApiClient extends NetOps {
     if (body) this.body = body;
   }
 
+  public set query(params: Record<string, string>) {
+    try {
+      this._query = new URLSearchParams(params).toString();
+    } catch (error) {}
+  }
+
   execute(path: string): Promise<FetchResponse> {
     let src = path;
     if (!path.startsWith("/")) src = `/${path}`;
+    if (this._query) {
+      src = `${src}?${this._query}`;
+    }
     return super.execute(src);
   }
 }

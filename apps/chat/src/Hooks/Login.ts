@@ -19,7 +19,10 @@ export default function useAuthentication(location: string = "/") {
       if (!username || !password) {
         setException("Please fill in both username and password");
       } else {
-        const chatUser = await fetch(formData, { replace: true });
+        const chatUser = await fetch({
+          payload: formData,
+          navOptions: { replace: true },
+        });
         const { error, data } = chatUser;
         const { message } = error || {};
         if (message) {

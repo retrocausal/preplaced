@@ -74,3 +74,36 @@
   width: 100%;
   height: 1px;
 }
+
+.loader {
+  width: 100%;
+  padding: 0.25rem;
+  display: flex;
+  justify-content: center;
+}
+.loader .loader-fragment {
+  border-radius: 50%;
+  width: 0.725rem;
+  height: 0.715rem;
+  margin: 0 0.125rem;
+  background-color: var(--accent);
+  animation: progress 1s infinite alternate;
+}
+
+@keyframes progress {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.loader-fragment:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.loader-fragment:nth-child(3) {
+  animation-delay: 0.9s;
+}
