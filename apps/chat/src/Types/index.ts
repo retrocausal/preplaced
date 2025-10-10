@@ -93,12 +93,17 @@ export type NavOpts = { replace?: boolean; includeState?: boolean };
 export interface LazyFetchState {
   id: string;
   messages: Chat["conversations"] | null;
-  page: number;
+  cursor: number | null;
+  resetObserver: boolean;
 }
 
 export type LazyFetchAction = {
   type: string;
-  value?: { id?: string; messages?: LazyFetchState["messages"]; page?: number };
+  value?: {
+    id?: string;
+    messages?: LazyFetchState["messages"];
+    cursor?: number | null;
+  };
 };
 
 export type FetchConfig = {

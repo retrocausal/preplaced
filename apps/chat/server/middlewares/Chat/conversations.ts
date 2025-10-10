@@ -13,34 +13,37 @@ export const fetchConversations = async (
   next: NextFunction
 ) => {
   const { userId } = req.query;
-  const { id, limit, page } = req.validatedQuery as GetConversationsReq;
-  const offset = (page - 1) * limit;
+  const { id, limit, page, cursor } = req.validatedQuery as GetConversationsReq;
   const conversationId = new mongoose.Types.ObjectId(id);
+  let messages: Partial<ChatAggregationResult>[] = [];
+  let offset = 0;
+
+  if (page) {
+    offset = (page - 1) * limit;
+  }
 
   try {
-    const messages: Partial<ChatAggregationResult>[] =
-      await Schema.Chat.aggregate([
-        { $match: { _id: conversationId } },
-        {
-          $set: {
-            currentUserId: userId,
-          },
+    messages = await Schema.Chat.aggregate([
+      { $match: { _id: conversationId } },
+      {
+        $set: {
+          currentUserId: userId,
         },
-        { ...conversationsLookup(limit, offset) },
-        {
-          $addFields: {
-            conversations: { ...deriveChatFields.$addFields.conversations },
-          },
+      },
+      { ...conversationsLookup(limit, offset, cursor) },
+      {
+        $addFields: {
+          conversations: { ...deriveChatFields.$addFields.conversations },
         },
-        {
-          $project: {
-            conversations: 1,
-          },
+      },
+      {
+        $project: {
+          conversations: 1,
         },
-      ]);
-    const conversations: Conversations | void[] =
+      },
+    ]);
+    let conversations: Conversations | void[] =
       messages.pop()?.conversations || [];
-
     res.json({ conversations });
   } catch (error: unknown) {
     next(error);

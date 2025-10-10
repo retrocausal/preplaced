@@ -5,18 +5,24 @@ export const lazyFetchReductions = (
   action: LazyFetchAction
 ): LazyFetchState => {
   const cloned = { ...state };
-  let messages: LazyFetchState["messages"] = null;
-  let existingMessages = cloned.messages ?? [];
   const { type, value } = action;
+  console.log(type);
+
   switch (type) {
-    case "COMPLETE":
-      messages = value?.messages ?? [];
-      cloned.messages = [...messages, ...existingMessages];
-      cloned.page = value?.page ?? cloned.page;
-      break;
     case "SETCONTEXT":
       cloned.id = value?.id ?? cloned.id;
-      cloned.messages = value?.messages ?? null;
+      cloned.messages = value?.messages ?? [];
+      cloned.cursor = value?.cursor ?? null;
+      break;
+    case "SCROLLEND":
+      cloned.resetObserver = true;
+      break;
+    case "COMPLETE":
+      cloned.messages = [
+        ...(value?.messages ?? []),
+        ...(cloned.messages ?? []),
+      ];
+      cloned.cursor = value?.cursor ?? null;
       break;
     default:
   }

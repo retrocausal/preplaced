@@ -12,7 +12,11 @@ export const participantsLookup = {
 
 // Conversations (messages) lookup stage with sub-pipeline
 
-export const conversationsLookup = (limit: number = 10, offset: number = 0) => {
+export const conversationsLookup = (
+  limit: number = 10,
+  offset: number = 0,
+  cursor?: number
+) => {
   return {
     $lookup: {
       from: "messages",
@@ -20,6 +24,9 @@ export const conversationsLookup = (limit: number = 10, offset: number = 0) => {
       foreignField: "_id",
       as: "conversations",
       pipeline: [
+        {
+          $match: cursor ? { timestamp: { $lt: new Date(cursor) } } : {},
+        },
         // Initial sort descending for latest first
         {
           $sort: { timestamp: -1 as -1 },

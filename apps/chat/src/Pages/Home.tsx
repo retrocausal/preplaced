@@ -1,24 +1,22 @@
+import { Fragment, useContext, type FunctionComponent } from "react";
 import { AppStateContext } from "@/Providers/AppContext";
-import { Fragment, useContext, useEffect, type FunctionComponent } from "react";
-import styles from "@/Styles/Home.module.css";
-import { Parley } from "@/Assets/parley";
 import useFetchChats from "@/Hooks/Fetch-More";
 import type { Chat } from "@/Types";
+import styles from "@/Styles/Home.module.css";
+import { Parley } from "@/Assets/parley";
 
 const Home: FunctionComponent = () => {
   const appCtx = useContext(AppStateContext);
   const { conversation, displayName } = appCtx;
   const { conversations, _id: id } = conversation || {};
-  const { target, ancestor, sBottom, observer, inProgress, messages } =
-    useFetchChats(id, conversations);
-  useEffect(() => {
-    let timeout: number;
-    sBottom.current?.scrollIntoView({ behavior: "smooth" });
-    timeout = setTimeout(observer, 1000);
-    return () => {
-      if (timeout) clearTimeout(timeout);
-    };
-  }, [sBottom, observer]);
+  const {
+    REFS,
+    inProgress,
+    messages,
+    id: conversationId,
+  } = useFetchChats(id, JSON.stringify(conversations || []));
+  const { target, sBottom, ancestor } = REFS;
+  const hasMessages = conversationId && messages && messages.length > 0;
 
   return (
     <div className={styles.container}>
@@ -41,16 +39,20 @@ const Home: FunctionComponent = () => {
                 </Fragment>
               )}
             </li>
-            {messages &&
-              messages.length > 0 &&
-              messages.map((msg) => (
+            {hasMessages &&
+              messages.map((msg, index) => (
                 <Message
-                  key={`${msg.epoch?.timestamp}-${id}`}
+                  key={`${conversationId}${index}${msg.epoch?.timestamp}`}
                   msg={msg}
                   displayName={displayName ?? ""}
                 />
               ))}
-            <li key={id} className={styles.sBottom} ref={sBottom}></li>
+            <li
+              key={id}
+              id={conversationId}
+              className={styles.sBottom}
+              ref={sBottom}
+            ></li>
           </ul>
         </div>
       )}
