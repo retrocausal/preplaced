@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "8.17.2",
     "multer": "^2.0.2",
+    "ws": "^8.18.3",
     "zod": "^4.0.17"
   },
   "devDependencies": {
@@ -36,7 +37,8 @@
     "concurrently": "^8.2.2",
     "nodemon": "^3.0.1",
     "response-time": "^2.3.4",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.2",
+    "@types/ws": "8.18.1"
   },
   "imports": {
     "#*": "./dist/*.js",

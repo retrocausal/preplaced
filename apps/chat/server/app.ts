@@ -9,12 +9,15 @@ import { authorize } from "#middlewares/Auth";
 import connection from "#db/db";
 import config from "#config";
 import JWTParser from "#middlewares/decode";
+import { setupWebSocket, notifyWebSocketClients } from "#websocket";
+import { extractPayload } from "#utils/jwt";
 
 const app: Express = express();
 const port: string = process.env.PORT!;
 // Start listening and return the server instance for graceful shutdown
 const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
+  setupWebSocket(server); // Setup WebSocket in callback
 });
 connection
   .then(() => {
@@ -36,16 +39,23 @@ connection
     app.use(routes);
     app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
       console.error("Run time Error:", err);
+      const status = (err as CustomException).statusCode || 500;
       if (
-        ((err as CustomException).statusCode &&
-          (err as CustomException).statusCode === 401) ||
-        (req.path && req.path.match(/^\/auth\/logout.*/))
+        (status === 401 || (req.path && req.path.match(/^\/auth\/logout.*/))) &&
+        req.cookies?.chatUser
       ) {
+        const payload = extractPayload(req.cookies.chatUser);
+        const userId = payload.id;
+        if (userId) {
+          notifyWebSocketClients(userId); // Notify WebSocket clients
+        }
         res.clearCookie("chatUser", { ...config.auth });
       }
       res
-        .status((err as CustomException).statusCode || 500)
-        .json({ message: (err as CustomException).message });
+        .status(status)
+        .json({
+          message: (err as CustomException).message || "Internal server error",
+        });
     });
   })
   .catch((err) => {

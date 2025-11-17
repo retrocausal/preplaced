@@ -3,11 +3,9 @@
 import express, { Router } from "express";
 import { login, logout } from "#middlewares/Auth";
 import { fetchChats } from "#middlewares/Chat/aggregator";
-import { fetchConversations } from "#middlewares/Chat/conversations";
-import {
-  validateChatQuery,
-  validateFetchConversationsQuery,
-} from "#middlewares/Chat/validators"; // Your new middleware
+import { fetchConversations } from "#middlewares/Messages/conversations";
+import { validateChatQuery } from "#middlewares/Chat/validators"; // Your new middleware
+import { validateFetchConversationsQuery } from "#middlewares/Messages/validators";
 
 // Create router instance
 const router: Router = express.Router();

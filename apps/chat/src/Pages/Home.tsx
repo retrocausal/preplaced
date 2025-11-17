@@ -54,6 +54,7 @@ const Home: FunctionComponent = () => {
               ref={sBottom}
             ></li>
           </ul>
+          {/** Add input box */}
         </div>
       )}
     </div>

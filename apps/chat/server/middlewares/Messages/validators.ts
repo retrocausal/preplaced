@@ -1,20 +1,19 @@
-// validateChatQuery.ts
 import { Request, Response, NextFunction } from "express";
 import { CustomException } from "#utils/exception";
-import { chatListRequestSchema } from "#models/request/Chat";
 import { GetConversationsSchema } from "#db/models/request/Conversations";
 import { ZodError } from "zod";
 
-export const validateChatQuery = (
+export const validateFetchConversationsQuery = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const validatedQuery = chatListRequestSchema.parse(req.query);
+    const validatedQuery = GetConversationsSchema.parse(req.query);
     req.validatedQuery = validatedQuery; // Add validated data to a new property
     next();
   } catch (error: unknown) {
+    console.log((error as ZodError).issues);
     const message =
       error instanceof ZodError
         ? error.issues[0].message
