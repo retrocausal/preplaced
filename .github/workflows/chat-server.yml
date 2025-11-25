@@ -1,23 +1,26 @@
 # .github/workflows/test.yml
-# Automates lint, tests, and coverage on push/PR (only if server/** changes)
-
 name: Run Tests and Lint
 
 on:
   push:
     branches:
-      - "**" # All branches
+      - "**"
     paths:
-      - "apps/chat/server/**" # Trigger only on server file changes
+      - "apps/chat/server/**"
   pull_request:
     branches:
       - main
     paths:
-      - "apps/chat/server/**" # Trigger only on server file changes
+      - "apps/chat/server/**"
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
+    # Sets the default directory for all 'run' commands below
+    defaults:
+      run:
+        working-directory: ./apps/chat/server
 
     steps:
       - name: Checkout code
@@ -27,9 +30,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Change Directory
-        run: cd apps/chat/server
+          cache: "npm"
+          # Point to the lock file in the subdirectory for caching
+          cache-dependency-path: apps/chat/server/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -40,9 +43,23 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Run tests
+      # 1. Standard Tests (Run on everything EXCEPT main)
+      - name: Run tests (Standard)
+        if: github.ref != 'refs/heads/main'
         run: npm test
 
-      - name: Run coverage (main only)
+      # 2. Coverage Tests (Run ONLY on main)
+      - name: Run tests with coverage (Main only)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: npm test -- --coverage
+
+      # 3. Upload Artifact (Only when coverage was run)
+      - name: Upload coverage report
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          # Note: 'uses' steps do not inherit the working-directory default,
+          # so we must specify the full path here.
+          path: apps/chat/server/coverage/
+          retention-days: 7 # Optional: Deletes files after a week to save space
