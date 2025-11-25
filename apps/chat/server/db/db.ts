@@ -1,6 +1,5 @@
 // Import Mongoose with types
 import mongoose from "mongoose";
-
 import "dotenv/config";
 // Import schema definitions
 import userSchema from "#models/User";

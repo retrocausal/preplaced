@@ -1,15 +1,19 @@
 # .github/workflows/test.yml
-# Automates lint, tests, and coverage on push/PR
+# Automates lint, tests, and coverage on push/PR (only if server/** changes)
 
 name: Run Tests and Lint
 
 on:
   push:
     branches:
-      - "**" # Trigger on push (commit) to any branch
+      - "**" # All branches
+    paths:
+      - "apps/chat/server/**" # Trigger only on server file changes
   pull_request:
     branches:
       - main
+    paths:
+      - "apps/chat/server/**" # Trigger only on server file changes
 
 jobs:
   build-and-test:
@@ -28,7 +32,7 @@ jobs:
         run: npm ci
 
       - name: Lint code
-        run: npm run lint # Runs on all triggers
+        run: npm run lint
 
       - name: Build app
         run: npm run build
