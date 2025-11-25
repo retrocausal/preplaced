@@ -13,7 +13,7 @@ export function setupWebSocket(
   const io = new SocketIOServer(server, {
     path: "/broadcast", // Base path for all namespaces
   });
-
+  // Apply global middlewares
   io.use(WSAuth);
   io.use(AttachId);
 
