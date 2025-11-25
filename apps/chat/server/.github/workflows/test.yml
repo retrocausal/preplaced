@@ -1,0 +1,41 @@
+# .github/workflows/test.yml
+# Automates lint, tests, and coverage on push/PR
+
+name: Run Tests and Lint
+
+on:
+  push:
+    branches:
+      - "**" # Trigger on push (commit) to any branch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run lint # Runs on all triggers
+
+      - name: Build app
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run coverage (main only)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: npm test -- --coverage

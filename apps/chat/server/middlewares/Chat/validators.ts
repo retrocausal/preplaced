@@ -2,7 +2,6 @@
 import { Request, Response, NextFunction } from "express";
 import { CustomException } from "#utils/exception";
 import { chatListRequestSchema } from "#models/request/Chat";
-import { GetConversationsSchema } from "#db/models/request/Conversations";
 import { ZodError } from "zod";
 
 export const validateChatQuery = (

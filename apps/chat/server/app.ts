@@ -4,13 +4,13 @@ import { CustomException } from "#utils/exception";
 import cookieParser from "cookie-parser";
 import multer from "multer";
 import "dotenv/config";
-import routes from "#routes";
-import { authorize } from "#middlewares/Auth";
 import connection from "#db/db";
 import config from "#config";
+import { setupWebSocket } from "#websocket";
+import { authorize } from "#middlewares/Auth";
 import JWTParser from "#middlewares/decode";
-import { setupWebSocket, notifyWebSocketClients } from "#websocket";
 import { extractPayload } from "#utils/jwt";
+import routes from "#routes";
 
 const app: Express = express();
 const port: string = process.env.PORT!;
@@ -47,15 +47,13 @@ connection
         const payload = extractPayload(req.cookies.chatUser);
         const userId = payload.id;
         if (userId) {
-          notifyWebSocketClients(userId); // Notify WebSocket clients
+          // Notify WebSocket clients
         }
         res.clearCookie("chatUser", { ...config.auth });
       }
-      res
-        .status(status)
-        .json({
-          message: (err as CustomException).message || "Internal server error",
-        });
+      res.status(status).json({
+        message: (err as CustomException).message || "Internal server error",
+      });
     });
   })
   .catch((err) => {

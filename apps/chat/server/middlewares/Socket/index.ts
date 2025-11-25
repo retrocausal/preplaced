@@ -1,17 +1,32 @@
-import { Request } from "express";
-import { WebSocket } from "ws";
-import type { IncomingMessage } from "http";
+import type { Socket, ExtendedError } from "socket.io";
+import { authorize } from "#middlewares/Auth";
+import JWTParser from "#middlewares/decode";
+import type { Request, Response, NextFunction } from "express";
 
-export function Authenticate(
-  req: IncomingMessage,
-  socket: WebSocket
+export function AttachId(
+  socket: Socket,
+  next: (err?: ExtendedError | undefined) => void
 ): string | void {
-  const request = req as Request;
-  const userId = request.query?.userId as string;
+  const userId = socket.handshake.query?.userId as string;
   if (!userId) {
-    socket.send(JSON.stringify({ error: "Unauthorized" }));
-    socket.close();
-    return;
+    throw new Error("No UserID to bind to");
   }
-  return userId;
+  socket.data.userId = userId;
+  next();
+}
+
+export function WSAuth(
+  socket: Socket,
+  next: (err?: ExtendedError | undefined) => void
+) {
+  const req = socket.request as Request;
+  const res = {} as Response;
+  try {
+    authorize(req, res, () => {
+      JWTParser(req, res, next as NextFunction);
+    });
+  } catch (err: unknown) {
+    const e = err instanceof Error ? err : new Error("Unknown Auth error");
+    next(e);
+  }
 }

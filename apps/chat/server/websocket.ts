@@ -1,25 +1,27 @@
-import { WebSocketServer } from "ws";
-import type { Server, IncomingMessage, ServerResponse } from "http";
-import { Authenticate } from "#middlewares/Socket/index";
+import { Server as SocketIOServer } from "socket.io";
+import type {
+  Server as HTTPServer,
+  IncomingMessage,
+  ServerResponse,
+} from "http";
+import { AttachId, WSAuth } from "#middlewares/Socket/index";
 
-// Setup function for WebSocket routes
+// Setup function for Socket.IO namespaces
 export function setupWebSocket(
-  server: Server<typeof IncomingMessage, typeof ServerResponse>
+  server: HTTPServer<typeof IncomingMessage, typeof ServerResponse>
 ) {
-  // Subscription route: /ws/subscribe
-  const subscribe = new WebSocketServer({
-    path: "/broadcast/subscribe",
-    server,
+  const io = new SocketIOServer(server, {
+    path: "/broadcast", // Base path for all namespaces
   });
 
-  // Messaging route: /ws/messages
-  const message = new WebSocketServer({ path: "/broadcast/messages", server });
+  io.use(WSAuth);
+  io.use(AttachId);
 
-  subscribe.on("connection", (socket, req) => {
-    Authenticate(req, socket);
-  });
+  // Subscription namespace: /broadcast/subscribe
+  const subscribe = io.of("/subscribe");
+  subscribe.on("connection", (socket) => {});
 
-  message.on("connection", (socket, req) => {
-    Authenticate(req, socket);
-  });
+  // Messaging namespace: /broadcast/messages
+  const message = io.of("/messages");
+  message.on("connection", (socket) => {});
 }

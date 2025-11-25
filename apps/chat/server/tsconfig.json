@@ -20,7 +20,7 @@
       "#utils/*": ["./utils/*.ts"] // Maps #utils/* to .ts files in the utils directory
     }
   },
-  "include": ["**/*.ts", "types.d.ts"], // Includes all .ts files in the project for compilation
+  "include": ["**/*.ts", "types.d.ts", "test/**/*.ts"], // Includes all .ts files in the project for compilation
   "exclude": ["node_modules"] // Excludes node_modules from the compilation process
   // TypeScript configuration for the chat server application
   // Defines compiler settings, module resolution, and alias paths for imports
