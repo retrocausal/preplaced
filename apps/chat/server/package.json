@@ -14,7 +14,16 @@
     "dev": "npm run watch & npm run start:all",
     "test": "jest",
     "test-watch": "jest --watchAll",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "prepare": "cd ../../.. && husky apps/chat/server/.husky"
+  },
+  "lint-staged": {
+    "**/*.{js,ts}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "jest": {
     "preset": "ts-jest",
@@ -56,14 +65,22 @@
     "@typescript-eslint/parser": "^8.48.0",
     "concurrently": "^8.2.2",
     "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-n": "^17.23.1",
+    "eslint-plugin-promise": "^7.2.1",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
+    "lint-staged": "^16.2.7",
     "mongodb-memory-server": "^10.3.0",
     "nodemon": "^3.0.1",
+    "prettier": "^3.6.2",
     "response-time": "^2.3.4",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.5",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.2",
+    "typescript-eslint": "^8.48.0"
   },
   "imports": {
     "#*": "./dist/*.js",

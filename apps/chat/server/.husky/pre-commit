@@ -1,0 +1,5 @@
+# Important: Navigate to the subfolder first!
+cd apps/chat/server
+
+# Now run lint-staged inside the correct folder
+npx lint-staged
