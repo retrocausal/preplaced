@@ -85,8 +85,9 @@
   "imports": {
     "#*": "./dist/*.js",
     "#db/*": "./dist/db/*.js",
-    "#models/*": "./dist/db/models/*.js",
+    "#modules/*": "./dist/modules/*.js",
     "#utils/*": "./dist/utils/*.js",
+    "#definitions/*": "./dist/definitions/*.js",
     "#middlewares/*": "./dist/middlewares/*.js"
   }
 }

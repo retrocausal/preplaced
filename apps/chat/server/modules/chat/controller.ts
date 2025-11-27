@@ -1,21 +1,14 @@
-import { Request, Response, NextFunction } from "express";
-import { Schema } from "#db/db";
-import { ChatList } from "#models/response/Chat";
-import { ChatListRequest } from "#models/request/Chat";
-import mongoose from "mongoose";
-import { ChatAggregationResult } from "#middlewares/types";
-import {
-  participantsLookup,
-  conversationsLookup,
-} from "#middlewares/lookups/chat";
-import { deriveChatFields } from "#middlewares/derivations/chat";
-import { finalChatProject } from "#middlewares/projections/chat";
+import { Request, Response, NextFunction } from 'express';
+import { Schema } from '#db/db';
+import { ChatList } from '#definitions/response/chat';
+import { ChatListRequest } from '#definitions/request/chat';
+import mongoose from 'mongoose';
+import { ChatAggregationResult } from '#definitions/response/chat';
+import { participantsLookup, conversationsLookup } from '#modules/chat/lookup';
+import { deriveChatFields } from '#modules/chat/derivation';
+import { finalChatProject } from '#modules/chat/projection';
 
-export const fetchChats = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const fetchChats = async (req: Request, res: Response, next: NextFunction) => {
   const { userId, limit, page, lazy } = req.validatedQuery as ChatListRequest;
   const total = await Schema.Chat.countDocuments({ participants: userId });
   const fetchLimit = lazy ? limit : total || limit;

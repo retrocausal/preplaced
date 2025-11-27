@@ -1,8 +1,8 @@
 // Import Mongoose with types
-import mongoose, { Schema, Types } from "mongoose";
-import { ChatDocument, MessageDocument } from "#models/types";
-import { CustomException } from "#utils/exception";
-import { Schema as Models } from "#db/db"; // Import the Schema object from db.ts
+import mongoose, { Schema, Types } from 'mongoose';
+import { ChatDocument, MessageDocument } from '#definitions/models';
+import { CustomException } from '#utils/exception';
+
 const { ObjectId } = Schema.Types;
 // Define schema
 const schema = new mongoose.Schema(
@@ -11,11 +11,11 @@ const schema = new mongoose.Schema(
       {
         type: ObjectId,
         required: true,
-        ref: "User",
+        ref: 'User',
         default: [],
         validate: {
           validator: async (userId: mongoose.Types.ObjectId) => {
-            return !!(await mongoose.model("User").findById(userId));
+            return !!(await mongoose.model('User').findById(userId));
           },
           message: (props: { value: Types.ObjectId }) =>
             `User with ID ${props.value} does not exist`,
@@ -26,11 +26,11 @@ const schema = new mongoose.Schema(
       {
         type: ObjectId,
         required: false,
-        ref: "User",
+        ref: 'User',
         default: [],
       },
     ], // Reference to User model
-    messages: [{ type: ObjectId, ref: "Message" }],
+    messages: [{ type: ObjectId, ref: 'Message' }],
     messageCount: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
     participantCount: { type: Number, default: 0 }, // Optional field for participant count
@@ -48,77 +48,67 @@ const schema = new mongoose.Schema(
         return ret;
       },
     },
-  }
+  },
 );
 
 // Add indexes
 schema.index({ participants: 1 }); // Index for participant lookups
 schema.index({ messages: 1 }); // Index for message ID lookups
 
-schema.virtual("members").get(function (this: ChatDocument) {
-  if (
-    this.populated("participants") &&
-    this.participants &&
-    Array.isArray(this.participants)
-  ) {
+schema.virtual('members').get(function (this: ChatDocument) {
+  if (this.populated('participants') && this.participants && Array.isArray(this.participants)) {
     return this.participants.map((p) => {
-      if (typeof p === "object" && "username" in p) {
+      if (typeof p === 'object' && 'username' in p) {
         return p.username; // Return only username
       }
       return p; // Fallback for non-object participants
     });
   }
 });
-schema.virtual("conversations").get(function (this: ChatDocument) {
-  if (
-    this.populated("messages") &&
-    this.messages &&
-    Array.isArray(this.messages)
-  ) {
+schema.virtual('conversations').get(function (this: ChatDocument) {
+  if (this.populated('messages') && this.messages && Array.isArray(this.messages)) {
     return (this.messages as MessageDocument[]).sort(
-      (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
+      (a, b) => a.timestamp.getTime() - b.timestamp.getTime(),
     );
   }
 });
 
-schema.pre("save", async function (this: ChatDocument, next) {
+schema.pre('save', async function (this: ChatDocument, next) {
   try {
-    if (this.isModified("participants")) {
+    const Models = {
+      Chat: mongoose.model('Chat'),
+      User: mongoose.model('User'),
+    };
+    if (this.isModified('participants')) {
       if (!this.isNew) {
         const previousParticipants =
           this.previousParticipants.length < 1
-            ? (await Models.Chat.findById(this._id, "participants"))
-                ?.participants || []
+            ? (await Models.Chat.findById(this._id, 'participants'))?.participants || []
             : [...(this.previousParticipants as Types.ObjectId[])];
 
         const existingParticipants = this.participants;
-        const newParticipants = (
-          existingParticipants as Types.ObjectId[]
-        ).filter(
-          (p) => !(previousParticipants as Types.ObjectId[]).includes(p)
+        const newParticipants = (existingParticipants as Types.ObjectId[]).filter(
+          (p) => !(previousParticipants as Types.ObjectId[]).includes(p),
         );
-        const removedParticipants = (
-          previousParticipants as Types.ObjectId[]
-        ).filter(
-          (p) => !(existingParticipants as Types.ObjectId[]).includes(p)
+        const removedParticipants = (previousParticipants as Types.ObjectId[]).filter(
+          (p) => !(existingParticipants as Types.ObjectId[]).includes(p),
         );
         // Set previousParticipants before async operations
-        this.previousParticipants =
-          this.participants.slice() as Types.ObjectId[];
+        this.previousParticipants = this.participants.slice() as Types.ObjectId[];
 
         const promises: Promise<any>[] = [];
         newParticipants.forEach((userId) => {
           promises.push(
             Models.User.findByIdAndUpdate(userId, {
               $inc: { chatCount: 1 },
-            })
+            }),
           );
         });
         removedParticipants.forEach((userId) => {
           promises.push(
             Models.User.findByIdAndUpdate(userId, {
               $inc: { chatCount: -1 },
-            })
+            }),
           );
         });
         await Promise.all(promises);
@@ -129,38 +119,31 @@ schema.pre("save", async function (this: ChatDocument, next) {
           promises.push(
             Models.User.findByIdAndUpdate(userId, {
               $inc: { chatCount: 1 },
-            })
+            }),
           );
         });
         await Promise.all(promises);
         // Set previousParticipants for new chat
-        this.previousParticipants =
-          this.participants.slice() as Types.ObjectId[];
+        this.previousParticipants = this.participants.slice() as Types.ObjectId[];
       }
 
       if (
         this.isNew ||
-        this.isModified("messages") ||
+        this.isModified('messages') ||
         (this.messages.length && this.messageCount !== this.messages.length)
       ) {
         this.messageCount = this.messages.length;
       }
       if (
         this.isNew ||
-        this.isModified("participants") ||
-        (this.participants.length &&
-          this.participantCount !== this.participants.length)
+        this.isModified('participants') ||
+        (this.participants.length && this.participantCount !== this.participants.length)
       ) {
         this.participantCount = this.participants.length;
       }
     }
     if (this.isNew && this.participants.length < 2) {
-      return next(
-        new CustomException(
-          "Chat must have at least 2 participants at creation",
-          400
-        )
-      );
+      return next(new CustomException('Chat must have at least 2 participants at creation', 400));
     }
     next();
   } catch (error) {
@@ -168,4 +151,4 @@ schema.pre("save", async function (this: ChatDocument, next) {
   }
 });
 // Export Chat model with interface
-export default mongoose.model<ChatDocument>("Chat", schema);
+export default mongoose.model<ChatDocument>('Chat', schema);

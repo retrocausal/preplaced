@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from "express";
-import { CustomException } from "#utils/exception";
-import { GetConversationsSchema } from "#db/models/request/Conversations";
-import { ZodError } from "zod";
+import { Request, Response, NextFunction } from 'express';
+import { CustomException } from '#utils/exception';
+import { GetConversationsSchema } from '#definitions/request/conversations';
+import { ZodError } from 'zod';
 
 export const validateFetchConversationsQuery = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const validatedQuery = GetConversationsSchema.parse(req.query);
@@ -17,8 +17,7 @@ export const validateFetchConversationsQuery = (
     const message =
       error instanceof ZodError
         ? error.issues[0].message
-        : (error as Error | CustomException).message ||
-          "Invalid query parameters";
+        : (error as Error | CustomException).message || 'Invalid query parameters';
     next(new CustomException(message, 400));
   }
 };

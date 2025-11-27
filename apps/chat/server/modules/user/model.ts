@@ -1,8 +1,8 @@
 // Import Mongoose and bcryptjs
-import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
-import { UserDocument } from "#models/types";
-import { generateToken } from "#utils/jwt";
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import { UserDocument } from '#definitions/models';
+import { generateToken } from '#utils/jwt';
 
 // Define schema
 const schema = new mongoose.Schema({
@@ -24,10 +24,9 @@ const schema = new mongoose.Schema({
 });
 
 // Hash password before saving with error handling
-schema.pre("save", async function (this: UserDocument, next) {
+schema.pre('save', async function (this: UserDocument, next) {
   try {
-    if (this.isModified("password"))
-      this.password = await bcrypt.hash(this.password, 10);
+    if (this.isModified('password')) this.password = await bcrypt.hash(this.password, 10);
     next();
   } catch (err) {
     next(err as Error);
@@ -37,12 +36,12 @@ schema.pre("save", async function (this: UserDocument, next) {
 // Method to validate password
 schema.methods.validateUser = async function (
   this: UserDocument,
-  password: string
+  password: string,
 ): Promise<boolean> {
   try {
     return await bcrypt.compare(password, this.password);
   } catch (err) {
-    throw new Error("Password validation failed: " + (err as Error).message);
+    throw new Error('Password validation failed: ' + (err as Error).message);
   }
 };
 
@@ -52,4 +51,4 @@ schema.methods.generateAuthToken = function (this: UserDocument): string {
 };
 
 // Export User model with interface
-export default mongoose.model<UserDocument>("User", schema);
+export default mongoose.model<UserDocument>('User', schema);

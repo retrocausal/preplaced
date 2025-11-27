@@ -1,10 +1,10 @@
 // Participants lookup stage
 export const participantsLookup = {
   $lookup: {
-    from: "users",
-    localField: "participants",
-    foreignField: "_id",
-    as: "participants",
+    from: 'users',
+    localField: 'participants',
+    foreignField: '_id',
+    as: 'participants',
     // Project usernames, displayName, and _id for comparison in deriveChatFields
     pipeline: [{ $project: { username: 1, displayName: 1, _id: 1 } }],
   },
@@ -12,17 +12,13 @@ export const participantsLookup = {
 
 // Conversations (messages) lookup stage with sub-pipeline
 
-export const conversationsLookup = (
-  limit: number = 10,
-  offset: number = 0,
-  cursor?: number
-) => {
+export const conversationsLookup = (limit: number = 10, offset: number = 0, cursor?: number) => {
   return {
     $lookup: {
-      from: "messages",
-      localField: "messages",
-      foreignField: "_id",
-      as: "conversations",
+      from: 'messages',
+      localField: 'messages',
+      foreignField: '_id',
+      as: 'conversations',
       pipeline: [
         {
           $match: cursor ? { timestamp: { $lt: new Date(cursor) } } : {},
@@ -46,25 +42,25 @@ export const conversationsLookup = (
         // Join author user details
         {
           $lookup: {
-            from: "users",
-            localField: "author",
-            foreignField: "_id",
-            as: "author",
+            from: 'users',
+            localField: 'author',
+            foreignField: '_id',
+            as: 'author',
             // Project only usernames and displayName
             pipeline: [{ $project: { username: 1, displayName: 1, _id: 0 } }],
           },
         },
         // Flatten author array to single object
         {
-          $unwind: "$author",
+          $unwind: '$author',
         },
         // Join viewedBy user details
         {
           $lookup: {
-            from: "users",
-            localField: "viewedBy",
-            foreignField: "_id",
-            as: "viewedBy",
+            from: 'users',
+            localField: 'viewedBy',
+            foreignField: '_id',
+            as: 'viewedBy',
             // Project only usernames and displayName
             pipeline: [{ $project: { username: 1, displayName: 1, _id: 0 } }],
           },
